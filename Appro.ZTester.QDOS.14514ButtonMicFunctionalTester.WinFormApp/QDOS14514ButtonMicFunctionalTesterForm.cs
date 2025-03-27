@@ -17,6 +17,9 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
     {
         private Engine _engine;
         private Task _pythonTask;
+
+        private Engine _engine1;
+        private Task _pythonTask1;
         public QDOS14514ButtonMicFunctionalTesterForm()
         {
             InitializeComponent();
@@ -25,27 +28,49 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
 
         private void Init()
         {
-            _engine = new Engine();
+            _engine1 = new Engine();
 
-            _engine.PythonOutputReceived += (sender, e) =>
+            _engine1.PythonOutputReceived += (sender, e) =>
             {
                 Invoke(new Action(() => MsgTextBox.AppendText($"Output: {e.Output}\r\n")));
             };
 
-            _engine.PythonErrorReceived += (sender, e) =>
+            _engine1.PythonErrorReceived += (sender, e) =>
             {
                 Invoke(new Action(() => MsgTextBox.AppendText($"Error: {e.Error}\r\n")));
             };
 
-            _engine.PythonProcessCompleted += (sender, e) =>
+            _engine1.PythonProcessCompleted += (sender, e) =>
             {
                 Invoke(new Action(() => MsgTextBox.AppendText($"Process Completed. Timed Out: {e.TimedOut}\r\n")));
             };
 
+            _engine = new Engine();
+
+            _engine.PythonOutputReceived += (sender, e) =>
+            {
+                Invoke(new Action(() => TestOperationTextBox.AppendText($"Output: {e.Output}\r\n")));
+            };
+
+            _engine.PythonErrorReceived += (sender, e) =>
+            {
+                Invoke(new Action(() => TestOperationTextBox.AppendText($"Error: {e.Error}\r\n")));
+            };
+
+            _engine.PythonProcessCompleted += (sender, e) =>
+            {
+                Invoke(new Action(() => TestOperationTextBox.AppendText($"Process Completed. Timed Out: {e.TimedOut}\r\n")));
+            };
+
+            PTTButton.Enabled = true;
+            VolumeUpButton.Enabled = true;
+            VolumeDownButton.Enabled = true;          
             StartButton.Enabled = true;
             StopButton.Enabled = true;
             ResetButton.Enabled = true;
+
             MsgTextBox.Clear();
+            TestOperationTextBox.Clear();
         }
 
         private void StopButton_Click(object sender, EventArgs e)
@@ -69,7 +94,7 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
             }
             catch (Exception ex)
             {
-                MsgTextBox.AppendText($"Exception: {ex.Message}\r\n");
+                TestOperationTextBox.AppendText($"Exception: {ex.Message}\r\n");
             }
 
             StartButton.Enabled = false;
@@ -83,6 +108,33 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
         private void ResetButton_Click(object sender, EventArgs e)
         {
             Init();
+        }
+
+        private async void VolumeUpButton_Click(object sender, EventArgs e)
+        {
+            string executableLocation = Assembly.GetExecutingAssembly().Location;
+            string executableDirectory = Path.GetDirectoryName(executableLocation);
+
+            string script = executableDirectory + "\\" + "tt.py";
+            int timeout = 20000;
+
+            _pythonTask1 = _engine1.ExecutePythonScriptAsync(script, timeout);
+
+            try
+            {
+                await _pythonTask1;
+            }
+            catch (Exception ex)
+            {
+                MsgTextBox.AppendText($"Exception: {ex.Message}\r\n");
+            }
+
+            VolumeUpButton.Enabled = false;
+        }
+
+        private void PTTButton_Click(object sender, EventArgs e)
+        {
+            _engine1.StopPythonProcess();
         }
     }
     
