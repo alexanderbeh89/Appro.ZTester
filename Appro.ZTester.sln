@@ -9,6 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appro.ZTester.PythonExecuti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appro.ZTester.QDOS.14514ButtonMicFunctionalTester.WinFormApp", "Appro.ZTester.QDOS.14514ButtonMicFunctionalTester.WinFormApp\Appro.ZTester.QDOS.14514ButtonMicFunctionalTester.WinFormApp.csproj", "{147F436B-2960-4E2C-874D-48689C781715}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appro.ZTester.QDOS.14514ButtonMicFunctionalTester.Services", "Appro.ZTester.QDOS.14514ButtonMicFunctionalTester.Services\Appro.ZTester.QDOS.14514ButtonMicFunctionalTester.Services.csproj", "{6997F77A-C1AC-4E33-B2A9-9ADD11EAF5DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appro.ZTester.QDOS.14514ButtonMicFunctionalTester.TestBlocks", "Appro.ZTester.QDOS.14514ButtonMicFunctionalTester.TestBlocks\Appro.ZTester.QDOS.14514ButtonMicFunctionalTester.TestBlocks.csproj", "{7C8B3902-E577-4E6E-9F70-9DFE30A06681}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appro.ZTester.QDOS.14514ButtonMicFunctionalTester.Common", "Appro.ZTester.QDOS.14514ButtonMicFunctionalTester.Common\Appro.ZTester.QDOS.14514ButtonMicFunctionalTester.Common.csproj", "{4E860125-F50F-4313-81A1-C1DAFD75C8B7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +33,18 @@ Global
 		{147F436B-2960-4E2C-874D-48689C781715}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{147F436B-2960-4E2C-874D-48689C781715}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{147F436B-2960-4E2C-874D-48689C781715}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6997F77A-C1AC-4E33-B2A9-9ADD11EAF5DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6997F77A-C1AC-4E33-B2A9-9ADD11EAF5DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6997F77A-C1AC-4E33-B2A9-9ADD11EAF5DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6997F77A-C1AC-4E33-B2A9-9ADD11EAF5DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C8B3902-E577-4E6E-9F70-9DFE30A06681}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C8B3902-E577-4E6E-9F70-9DFE30A06681}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C8B3902-E577-4E6E-9F70-9DFE30A06681}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C8B3902-E577-4E6E-9F70-9DFE30A06681}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E860125-F50F-4313-81A1-C1DAFD75C8B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E860125-F50F-4313-81A1-C1DAFD75C8B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E860125-F50F-4313-81A1-C1DAFD75C8B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E860125-F50F-4313-81A1-C1DAFD75C8B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,5 +1,4 @@
-﻿using Appro.ZTester.PythonExecution;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,57 +9,60 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.Common;
+using Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.Services;
 
 namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
 {
     public partial class QDOS14514ButtonMicFunctionalTesterForm : Form
     {
-        private Engine _engine;
-        private Task _pythonTask;
+        private IRunTest _upVolumeService;
+        private IRunTest _startTestService;
 
-        private Engine _engine1;
-        private Task _pythonTask1;
         public QDOS14514ButtonMicFunctionalTesterForm()
         {
             InitializeComponent();
             Init();
         }
 
+        private void InitUpVolumeService()
+        {
+            _upVolumeService = ServiceFactory.GetIRunTestInstance("UpVolume");
+            _upVolumeService.ResultReceived += (sender, e) =>
+            {
+                Invoke(new Action(() => MsgTextBox.AppendText($"***UpVolumeService Output***\r\n {e.Output}\r\n")));
+            };
+            _upVolumeService.PassReceived += (sender, e) =>
+            {
+                Invoke(new Action(() => MsgTextBox.AppendText($"***UpVolumeService Pass***\r\n")));
+            };
+            _upVolumeService.FailReceived += (sender, e) =>
+            {
+                Invoke(new Action(() => MsgTextBox.AppendText($"***UpVolumeService Fail***\r\n")));
+            };
+        }
+        private void InitStartTestService()
+        {
+            _startTestService = ServiceFactory.GetIRunTestInstance("StartTest");
+            _startTestService.ResultReceived += (sender, e) =>
+            {
+                Invoke(new Action(() => TestOperationTextBox.AppendText($"***StartTestService Output***\r\n {e.Output}\r\n")));
+            };
+
+            _startTestService.PassReceived += (sender, e) =>
+            {
+                Invoke(new Action(() => TestOperationTextBox.AppendText($"***StartTestService Pass***\r\n")));
+            };
+            _startTestService.FailReceived += (sender, e) =>
+            {
+                Invoke(new Action(() => TestOperationTextBox.AppendText($"***StartTestService Fail***\r\n")));
+            };
+        }
+
         private void Init()
         {
-            _engine1 = new Engine();
-
-            _engine1.PythonOutputReceived += (sender, e) =>
-            {
-                Invoke(new Action(() => MsgTextBox.AppendText($"Output: {e.Output}\r\n")));
-            };
-
-            _engine1.PythonErrorReceived += (sender, e) =>
-            {
-                Invoke(new Action(() => MsgTextBox.AppendText($"Error: {e.Error}\r\n")));
-            };
-
-            _engine1.PythonProcessCompleted += (sender, e) =>
-            {
-                Invoke(new Action(() => MsgTextBox.AppendText($"Process Completed. Timed Out: {e.TimedOut}\r\n")));
-            };
-
-            _engine = new Engine();
-
-            _engine.PythonOutputReceived += (sender, e) =>
-            {
-                Invoke(new Action(() => TestOperationTextBox.AppendText($"Output: {e.Output}\r\n")));
-            };
-
-            _engine.PythonErrorReceived += (sender, e) =>
-            {
-                Invoke(new Action(() => TestOperationTextBox.AppendText($"Error: {e.Error}\r\n")));
-            };
-
-            _engine.PythonProcessCompleted += (sender, e) =>
-            {
-                Invoke(new Action(() => TestOperationTextBox.AppendText($"Process Completed. Timed Out: {e.TimedOut}\r\n")));
-            };
+            InitUpVolumeService();
+            InitStartTestService();
 
             PTTButton.Enabled = true;
             VolumeUpButton.Enabled = true;
@@ -75,34 +77,13 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
 
         private void StopButton_Click(object sender, EventArgs e)
         {
-            _engine.StopPythonProcess();
+            _startTestService.Abort();
         }
 
         private async void StartButton_Click(object sender, EventArgs e)
         {
-            string executableLocation = Assembly.GetExecutingAssembly().Location;
-            string executableDirectory = Path.GetDirectoryName(executableLocation);
-
-            string script = executableDirectory + "\\" + "t.py";
-            int timeout = 15000;
-
-            _pythonTask = _engine.ExecutePythonScriptAsync(script, timeout);
-
-            try
-            {
-                await _pythonTask;
-            }
-            catch (Exception ex)
-            {
-                TestOperationTextBox.AppendText($"Exception: {ex.Message}\r\n");
-            }
-
+            await _startTestService.Run();
             StartButton.Enabled = false;
-        }
-
-        private void buttonStop_Click(object sender, EventArgs e)
-        {
-            _engine.StopPythonProcess();
         }
 
         private void ResetButton_Click(object sender, EventArgs e)
@@ -112,29 +93,14 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
 
         private async void VolumeUpButton_Click(object sender, EventArgs e)
         {
-            string executableLocation = Assembly.GetExecutingAssembly().Location;
-            string executableDirectory = Path.GetDirectoryName(executableLocation);
-
-            string script = executableDirectory + "\\" + "tt.py";
-            int timeout = 20000;
-
-            _pythonTask1 = _engine1.ExecutePythonScriptAsync(script, timeout);
-
-            try
-            {
-                await _pythonTask1;
-            }
-            catch (Exception ex)
-            {
-                MsgTextBox.AppendText($"Exception: {ex.Message}\r\n");
-            }
+            await _upVolumeService.Run();
 
             VolumeUpButton.Enabled = false;
         }
 
         private void PTTButton_Click(object sender, EventArgs e)
         {
-            _engine1.StopPythonProcess();
+            _upVolumeService.Abort();
         }
     }
     
