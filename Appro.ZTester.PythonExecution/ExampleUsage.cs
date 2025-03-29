@@ -12,6 +12,7 @@ namespace Appro.ZTester.PythonExecution
     {
         public static async Task RunExample()
         {
+            Console.WriteLine("RunExample Started.");
             Engine engine = new Engine();
 
             engine.PythonOutputReceived += (sender, e) =>
@@ -39,6 +40,9 @@ namespace Appro.ZTester.PythonExecution
             Console.WriteLine("Stopping process...");
             engine.StopPythonProcess();
 
+            //simulate the task that need 15 sec to complete 
+            await Task.Delay(15000);
+            Console.WriteLine("RunExample Completed.");
             /*
             string script = "import time; print('Start'); time.sleep(5); print('End')";
 

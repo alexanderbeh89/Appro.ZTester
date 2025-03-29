@@ -5,85 +5,50 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using Newtonsoft.Json.Linq;
 using Appro.ZTester.PythonExecution;
 using Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.Services;
 
 namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.TestBlocks
 {
-    public class UpVolume : IRunTest
-    {
-        public event EventHandler<ServiceResultReceivedEventArgs> ResultReceived;
-        public event EventHandler<ServiceResultReceivedEventArgs> PassReceived;
-        public event EventHandler<ServiceResultReceivedEventArgs> FailReceived;
-
-        private const string PYTHON_TEST = "up_volume";
-        private const string PYTHON_TEST_SCRIPT = PYTHON_TEST + ".py";
-        private const string PYTHON_TEST_PASS = "TESTPASS";
-        private const int PYTHON_TEST_TIMEOUT = 5000;
-
-        private StringBuilder _ret;
-        private Engine _engine;
-        private Task _pythonTask;
-        
-        public UpVolume() 
+    public class UpVolume : BaseTest, IRunTest
+    {  
+        public override async Task Run(object paramObj)
         {
-            _ret = new StringBuilder();
-            _engine = new Engine();
-               
-            _engine.PythonOutputReceived += (sender, e) =>
+            try
             {
-                _ret.Append(string.Format("{0} Output:{1}", PYTHON_TEST, e.Output));
-            };
+                if (!(paramObj is JObject jObject))
+                {
+                    _ret.Append("Fail to Run, paramObj is not valid JSON Object");
+                    OnFailReceived(_ret.ToString());
+                    return;
+                }
 
-            _engine.PythonErrorReceived += (sender, e) =>
-            {
-                _ret.Append(string.Format("{0} Error:{1}", PYTHON_TEST, e.Error));
-            };
+                string script = (string)jObject["SCRIPT"];
+                int timeout = (int)jObject["TIMEOUT"];
+                string passCondition = (string)jObject["PASS_CONDITION"];
+                int comPort = (int)jObject["COMPORT"];
 
-            _engine.PythonProcessCompleted += (sender, e) =>
-            {
-                _ret.Append(string.Format("{0} Timeout:{1}", PYTHON_TEST, e.TimedOut));
-            };
-            
-        }
-        public async Task Run()
-        {
-            string executableLocation = Assembly.GetExecutingAssembly().Location;
-            string executableDirectory = Path.GetDirectoryName(executableLocation) + "\\Scripts\\Python\\";
+                _pythonTask = _engine.ExecutePythonScriptAsync(script, timeout);
+                await _pythonTask;
 
-            string script = executableDirectory + PYTHON_TEST_SCRIPT;
+                OnResultReceived(_ret.ToString());
 
-            _pythonTask = _engine.ExecutePythonScriptAsync(script, PYTHON_TEST_TIMEOUT);
-
-            await _pythonTask;
-
-            OnResultReceived(_ret.ToString());
-
-            if (_ret.ToString().Contains(PYTHON_TEST_PASS))
-            {
-                OnPassReceived(_ret.ToString());
+                if (_ret.ToString().Contains(passCondition))
+                {
+                    OnPassReceived(_ret.ToString());
+                }
+                else
+                {
+                    OnFailReceived(_ret.ToString());
+                }
             }
-            else
+            catch (Exception ex)
             {
+                _ret.Append($"Failed to run {ex.Message}");
                 OnFailReceived(_ret.ToString());
             }
-        }
-
-        public void Abort()
-        {
-            _engine.StopPythonProcess();
-        }
-        protected virtual void OnResultReceived(string output)
-        {
-            ResultReceived?.Invoke(this, new ServiceResultReceivedEventArgs(output));
-        }
-        protected virtual void OnPassReceived(string output)
-        {
-            PassReceived?.Invoke(this, new ServiceResultReceivedEventArgs(output));
-        }
-        protected virtual void OnFailReceived(string output)
-        {
-            FailReceived?.Invoke(this, new ServiceResultReceivedEventArgs(output));
         }
     }
 }

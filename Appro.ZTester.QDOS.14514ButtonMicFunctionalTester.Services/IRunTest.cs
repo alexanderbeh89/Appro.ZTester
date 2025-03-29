@@ -8,7 +8,7 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.Services
 {
     public interface IRunTest
     {
-        Task Run();
+        Task Run(object paramObj);
         void Abort();
 
         event EventHandler <ServiceResultReceivedEventArgs> ResultReceived;
