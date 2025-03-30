@@ -13,8 +13,6 @@ using System.Windows.Forms;
 using Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.Common;
 using Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.Services;
 using System.Threading;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-
 
 namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
 {
@@ -158,25 +156,18 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
         
         private void FileMonitor_FileFound(object sender, FileFoundEventArgs e)
         {
-            // TODO: Include the logic
+            Invoke(new Action(() => MsgTextBox.AppendText($"{e.FileName}\r\n")));
+            Thread.Sleep(1000);
+            Invoke(new Action(() => MsgTextBox.Clear()));
         }
         
         private void QDOS14514ButtonMicFunctionalTesterForm_Load(object sender, EventArgs e)
         {
             string folderPath = Path.Combine(Environment.CurrentDirectory, "Observation");
-            _fileMonitor = new CheckStatusFileExistence(folderPath, "abc.txt", FileMonitorUIChanged);
+            _fileMonitor = new CheckStatusFileExistence(folderPath, "abc.txt");
             _fileMonitor.FileFound += FileMonitor_FileFound;
 
             _fileMonitor.StartMonitoring();
-        }
-
-        private void FileMonitorUIChanged(string msg)
-        {
-            // To avoid the Exception below happened, we need to wrap the winform actions with Invoke + new Action...
-            // this Exception will happen if we dont wrap => "Cross-thread operation not valid: Control 'MsgTextBox' accessed from a thread other than the thread it was created on."
-            Invoke(new Action(() => MsgTextBox.AppendText($"{msg}\r\n")));
-            Thread.Sleep(1000);
-            Invoke(new Action(() => MsgTextBox.Clear()));
         }
 
         private void QDOS14514ButtonMicFunctionalTesterForm_FormClosing_1(object sender, FormClosingEventArgs e)
