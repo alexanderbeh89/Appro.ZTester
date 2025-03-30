@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.Common;
 using Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.Services;
 using System.Threading;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 
 namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
@@ -28,6 +29,8 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
             _upVolumeService.ResultReceived += (sender, e) =>
             {
                 Invoke(new Action(() => MsgTextBox.AppendText($"***UpVolume Output***\r\n {e.Output}\r\n")));
+                VolumeUpButton.Enabled = true;
+
             };
             _upVolumeService.PassReceived += (sender, e) =>
             {
@@ -46,13 +49,14 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
             _startTestService.ResultReceived += (sender, e) =>
             {
                 Invoke(new Action(() => TestOperationTextBox.AppendText($"***Test Output***\r\n {e.Output}\r\n")));
+                StartButton.Enabled = true;
             };
 
             _startTestService.PassReceived += (sender, e) =>
             {
                 Invoke(new Action(() => TestOperationTextBox.AppendText($"Result: Test Pass\r\n")));
                 Thread.Sleep(1000);
-                TestOperationTextBox.Clear();
+                TestOperationTextBox.Clear();                
             };
             _startTestService.FailReceived += (sender, e) =>
             {
@@ -97,7 +101,6 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
         private async void StartButton_Click(object sender, EventArgs e)
         {
             StartButton.Enabled = false;
-
             string executableLocation = Assembly.GetExecutingAssembly().Location;
             string executableDirectory = Path.GetDirectoryName(executableLocation) + "\\Scripts\\Python\\";
 
@@ -110,7 +113,7 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
                 ["SCRIPT1"] = executableDirectory + "UpVolume.py",
 
             };
-            
+
             await _startTestService.Run(paramObj);
 
             StartButton.Enabled = true;
@@ -120,7 +123,7 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
         {
             AbortAllServices();
             Init();
-        }
+        }       
 
         private async void VolumeUpButton_Click(object sender, EventArgs e)
         {
@@ -141,16 +144,44 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
 
             VolumeUpButton.Enabled = true;
         }
-
         private void PTTButton_Click(object sender, EventArgs e)
         {
             _upVolumeService.Abort();
         }
-
         public QDOS14514ButtonMicFunctionalTesterForm()
         {
             InitializeComponent();
             Init();
+        }
+
+        private CheckStatusFileExistence _fileMonitor;
+        
+        private void FileMonitor_FileFound(object sender, FileFoundEventArgs e)
+        {
+            // TODO: Include the logic
+        }
+        
+        private void QDOS14514ButtonMicFunctionalTesterForm_Load(object sender, EventArgs e)
+        {
+            string folderPath = Path.Combine(Environment.CurrentDirectory, "Observation");
+            _fileMonitor = new CheckStatusFileExistence(folderPath, "abc.txt", FileMonitorUIChanged);
+            _fileMonitor.FileFound += FileMonitor_FileFound;
+
+            _fileMonitor.StartMonitoring();
+        }
+
+        private void FileMonitorUIChanged(string msg)
+        {
+            // To avoid the Exception below happened, we need to wrap the winform actions with Invoke + new Action...
+            // this Exception will happen if we dont wrap => "Cross-thread operation not valid: Control 'MsgTextBox' accessed from a thread other than the thread it was created on."
+            Invoke(new Action(() => MsgTextBox.AppendText($"{msg}\r\n")));
+            Thread.Sleep(1000);
+            Invoke(new Action(() => MsgTextBox.Clear()));
+        }
+
+        private void QDOS14514ButtonMicFunctionalTesterForm_FormClosing_1(object sender, FormClosingEventArgs e)
+        {
+            _fileMonitor.StopMonitoring();
         }
     }
     

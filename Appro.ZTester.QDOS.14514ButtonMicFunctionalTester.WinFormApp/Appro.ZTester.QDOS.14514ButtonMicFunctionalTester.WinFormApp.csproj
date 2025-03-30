@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CheckStatusFileExistence.cs" />
     <Compile Include="QDOS14514ButtonMicFunctionalTesterForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -130,6 +130,8 @@
             this.Controls.Add(this.StartButton);
             this.Name = "QDOS14514ButtonMicFunctionalTesterForm";
             this.Text = "QDOS";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.QDOS14514ButtonMicFunctionalTesterForm_FormClosing_1);
+            this.Load += new System.EventHandler(this.QDOS14514ButtonMicFunctionalTesterForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
