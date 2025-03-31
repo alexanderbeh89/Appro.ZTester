@@ -46,19 +46,19 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
             _startTestService = ServiceFactory.GetIRunTestInstance("StartTest");
             _startTestService.ResultReceived += (sender, e) =>
             {
-                Invoke(new Action(() => TestOperationTextBox.AppendText($"***Test Output***\r\n {e.Output}\r\n")));
+                Invoke(new Action(() => TestOperationTextBox.AppendText($"{e.Output}\r\n")));
                 StartButton.Enabled = true;
             };
 
             _startTestService.PassReceived += (sender, e) =>
             {
-                Invoke(new Action(() => TestOperationTextBox.AppendText($"Result: Test Pass\r\n")));
+                Invoke(new Action(() => TestOperationTextBox.AppendText($"[Test Pass from GUI]\r\n")));
                 Thread.Sleep(1000);
                 TestOperationTextBox.Clear();                
             };
             _startTestService.FailReceived += (sender, e) =>
             {
-                Invoke(new Action(() => TestOperationTextBox.AppendText($"Result: Test Fail\r\n")));  // Dont call TestOperationTextBox.Clear(); to let user troubleshoot the issue 1st before clicking the Reset Button
+                Invoke(new Action(() => TestOperationTextBox.AppendText($"[Test Fail from GUI]\r\n")));  // Dont call TestOperationTextBox.Clear(); to let user troubleshoot the issue 1st before clicking the Reset Button
             };
         }
 
@@ -93,58 +93,86 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
 
         private void StopButton_Click(object sender, EventArgs e)
         {
-            _startTestService.Abort();
+            try
+            {
+                _startTestService.Abort();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private async void StartButton_Click(object sender, EventArgs e)
         {
             StartButton.Enabled = false;
-            string executableLocation = Assembly.GetExecutingAssembly().Location;
-            string executableDirectory = Path.GetDirectoryName(executableLocation) + "\\Scripts\\Python\\";
+            TestOperationTextBox.Clear();
 
-            JObject paramObj = new JObject
+            try
             {
-                ["SCRIPT"] = executableDirectory + "StartTest.py",
-                ["TIMEOUT"] = 20000,
-                ["PASS_CONDITION"] = "TESTPASS",
-                ["COMPORT"] = 1,
-                ["SCRIPT1"] = executableDirectory + "UpVolume.py",
+                string executableLocation = Assembly.GetExecutingAssembly().Location;
+                string executablePath = Path.GetDirectoryName(executableLocation) + "\\" + "testflow.json";
+                string jsonString = File.ReadAllText(executablePath);
+                JArray jArray = JArray.Parse(jsonString);
 
-            };
-
-            await _startTestService.Run(paramObj);
-
+                await _startTestService.Run(jArray);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            
             StartButton.Enabled = true;
         }
 
         private void ResetButton_Click(object sender, EventArgs e)
         {
-            AbortAllServices();
-            Init();
+            try
+            {
+                AbortAllServices();
+                Init();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }       
 
         private async void VolumeUpButton_Click(object sender, EventArgs e)
         {
             VolumeUpButton.Enabled = false;
-
-            string executableLocation = Assembly.GetExecutingAssembly().Location;
-            string executableDirectory = Path.GetDirectoryName(executableLocation) + "\\Scripts\\Python\\";
-
-            JObject paramObj = new JObject
+            try
             {
-                ["SCRIPT"] = executableDirectory + "UpVolume.py",
-                ["TIMEOUT"] = 10000,
-                ["PASS_CONDITION"] = "TESTPASS",
-                ["COMPORT"] = 1
-            };
+                string executableLocation = Assembly.GetExecutingAssembly().Location;
+                string executableDirectory = Path.GetDirectoryName(executableLocation) + "\\Scripts\\Python\\";
 
-            await _upVolumeService.Run(paramObj);
+                JObject paramObj = new JObject
+                {
+                    ["SCRIPT"] = executableDirectory + "UpVolume.py",
+                    ["TIMEOUT"] = 10000,
+                    ["PASS_CONDITION"] = "TESTPASS",
+                    ["COMPORT"] = 1
+                };
 
+                await _upVolumeService.Run(paramObj);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            
             VolumeUpButton.Enabled = true;
         }
         private void PTTButton_Click(object sender, EventArgs e)
         {
-            _upVolumeService.Abort();
+            try
+            {
+                _upVolumeService.Abort();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }          
         }
         public QDOS14514ButtonMicFunctionalTesterForm()
         {
@@ -163,16 +191,30 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
         
         private void QDOS14514ButtonMicFunctionalTesterForm_Load(object sender, EventArgs e)
         {
-            string folderPath = Path.Combine(Environment.CurrentDirectory, "Observation");
-            _fileMonitor = new CheckStatusFileExistence(folderPath, "abc.txt");
-            _fileMonitor.FileFound += FileMonitor_FileFound;
+            try
+            {
+                string folderPath = Path.Combine(Environment.CurrentDirectory, "Observation");
+                _fileMonitor = new CheckStatusFileExistence(folderPath, "abc.txt");
+                _fileMonitor.FileFound += FileMonitor_FileFound;
 
-            _fileMonitor.StartMonitoring();
+                _fileMonitor.StartMonitoring();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void QDOS14514ButtonMicFunctionalTesterForm_FormClosing_1(object sender, FormClosingEventArgs e)
         {
-            _fileMonitor.StopMonitoring();
+            try
+            {
+                _fileMonitor.StopMonitoring();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
     

@@ -1,0 +1,45 @@
+[
+    {
+        "SCRIPT" : "C:\\Users\\30716\\Documents\\GitHub\\Appro.ZTester\\External\\Scripts\\Python\\PowerUp.py",
+        "TIMEOUT" : 20000,
+        "PASS_CONDITION" : "TESTPASS",
+        "COMPORT" : 1
+    }
+    ,
+    {
+        "SCRIPT" : "C:\\Users\\30716\\Documents\\GitHub\\Appro.ZTester\\External\\Scripts\\Python\\UpVolume.py",
+        "TIMEOUT" : 20000,
+        "PASS_CONDITION" : "TESTPASS",
+        "COMPORT" : 1,
+        "FAIL_CONDITION" : "TESTFAIL"
+    }
+    ,
+    {
+        "SCRIPT" : "C:\\Users\\30716\\Documents\\GitHub\\Appro.ZTester\\External\\Scripts\\Python\\DownVolume.py",
+        "TIMEOUT" : 20000,
+        "PASS_CONDITION" : "TESTPASS",
+        "COMPORT" : 1
+    }
+    ,
+    {
+        "SCRIPT" : "C:\\Users\\30716\\Documents\\GitHub\\Appro.ZTester\\External\\Scripts\\Python\\PTT.py",
+        "TIMEOUT" : 20000,
+        "PASS_CONDITION" : "TESTPASS",
+        "COMPORT" : 1,
+        "FAIL_CONDITION" : "TESTFAIL"
+    }
+    ,    {
+        "SCRIPT" : "C:\\Users\\30716\\Documents\\GitHub\\Appro.ZTester\\External\\Scripts\\Python\\MeasureMic.py",
+        "TIMEOUT" : 20000,
+        "PASS_CONDITION" : "TESTPASS",
+        "COMPORT" : 1
+    }
+    ,
+    {
+        "SCRIPT" : "C:\\Users\\30716\\Documents\\GitHub\\Appro.ZTester\\External\\Scripts\\Python\\PowerDown.py",
+        "TIMEOUT" : 20000,
+        "PASS_CONDITION" : "TESTPASS",
+        "COMPORT" : 1,
+        "FAIL_CONDITION" : "TESTFAIL"
+    }
+]

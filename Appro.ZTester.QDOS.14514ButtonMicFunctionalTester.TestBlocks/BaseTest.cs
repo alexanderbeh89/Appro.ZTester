@@ -19,24 +19,41 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.TestBlocks
         protected Engine _engine;
         protected Task _pythonTask;
 
+        protected bool _isDebug;
+
+        protected virtual void OnResultReceived(string output)
+        {
+            ResultReceived?.Invoke(this, new ServiceResultReceivedEventArgs(output));
+        }
+        protected virtual void OnPassReceived(string output)
+        {
+            PassReceived?.Invoke(this, new ServiceResultReceivedEventArgs(output));
+        }
+        protected virtual void OnFailReceived(string output)
+        {
+            FailReceived?.Invoke(this, new ServiceResultReceivedEventArgs(output));
+        }
+
         public BaseTest()
         {
             _ret = new StringBuilder();
             _engine = new Engine();
+            _isDebug = false;
 
             _engine.PythonOutputReceived += (sender, e) =>
             {
-                _ret.Append(string.Format("Python Output:{0}\r\n", e.Output));
+                _ret.Append(string.Format("[INFO]{0}\r\n", e.Output));
             };
 
             _engine.PythonErrorReceived += (sender, e) =>
             {
-                _ret.Append(string.Format("Python Error:{0}\r\n", e.Error));
+                _ret.Append(string.Format("[ERROR]{0}\r\n", e.Error));
             };
 
             _engine.PythonProcessCompleted += (sender, e) =>
             {
-                _ret.Append(string.Format("Python Timeout:{0}\r\n", e.TimedOut));
+                if (_isDebug)
+                    _ret.Append(string.Format("[TIMEOUT]{0}\r\n", e.TimedOut));
             };
         }
         public virtual async Task Run(object paramObj)
@@ -75,21 +92,9 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.TestBlocks
                 OnFailReceived(_ret.ToString());
             }
         }
-        public void Abort()
+        public virtual void Abort()
         {
             _engine.StopPythonProcess();
-        }
-        protected virtual void OnResultReceived(string output)
-        {
-            ResultReceived?.Invoke(this, new ServiceResultReceivedEventArgs(output));
-        }
-        protected virtual void OnPassReceived(string output)
-        {
-            PassReceived?.Invoke(this, new ServiceResultReceivedEventArgs(output));
-        }
-        protected virtual void OnFailReceived(string output)
-        {
-            FailReceived?.Invoke(this, new ServiceResultReceivedEventArgs(output));
         }
     }
 }
