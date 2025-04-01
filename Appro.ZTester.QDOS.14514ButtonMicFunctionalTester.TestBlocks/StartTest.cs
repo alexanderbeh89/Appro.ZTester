@@ -19,23 +19,6 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.TestBlocks
             private BaseTest _currentBaseTest;
             private bool _isTestFlowFail;
 
-            private string ParsePythonFileNameWithoutExtension(string rawString)
-            {
-                if (string.IsNullOrEmpty(rawString))
-                {
-                    return null; // Or throw an exception, depending on your needs.
-                }
-
-                try
-                {
-                    string fileName = Path.GetFileNameWithoutExtension(rawString);
-                    return fileName;
-                }
-                catch (ArgumentException)
-                {
-                    return null; // Or throw a more specific exception.
-                }
-            }
             private async Task RunTestFlow(List<TestFlowItem> testFlowItems)
             {
                 foreach (TestFlowItem item in testFlowItems)
@@ -43,12 +26,16 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.TestBlocks
                     if (_isTestFlowFail)
                         break;
 
+
                     JObject paramObj = new JObject
                     {
+                        ["TEST_NAME"] = item.TEST_NAME,
                         ["SCRIPT"] = item.SCRIPT,
+                        ["SCRIPT_ARGUMENT"] = item.SCRIPT_ARGUMENT,
                         ["TIMEOUT"] = item.TIMEOUT,
                         ["PASS_CONDITION"] = item.PASS_CONDITION,
-                        ["COMPORT"] = item.COMPORT
+                        ["COMPORT"] = item.COMPORT,                     
+                        ["FAIL_CONDITION"] = item.FAIL_CONDITION
                     };
 
                     _currentBaseTest = new BaseTest();
@@ -59,18 +46,18 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.TestBlocks
                     _currentBaseTest.PassReceived += (sender, e) =>
                     {
                         if (_isTestFlowFail)
-                            OnResultReceived(string.Format("[{0} Test ABORTED]\r\n", ParsePythonFileNameWithoutExtension(item.SCRIPT)));
+                            OnResultReceived(string.Format("[{0} Test ABORTED]\r\n", item.TEST_NAME));
                         else
-                            OnResultReceived(string.Format("[{0} Test PASS]\r\n", ParsePythonFileNameWithoutExtension(item.SCRIPT)));
+                            OnResultReceived(string.Format("[{0} Test PASS]\r\n", item.TEST_NAME));
                     };
                     _currentBaseTest.FailReceived += (sender, e) =>
                     {
                         _isTestFlowFail = true;                       
-                        OnResultReceived(string.Format("[{0} Test FAIL]\r\n", ParsePythonFileNameWithoutExtension(item.SCRIPT)));
+                        OnResultReceived(string.Format("[{0} Test FAIL]\r\n", item.TEST_NAME));
                         _currentBaseTest.Abort();
                     };
 
-                    OnResultReceived(string.Format("[{0} Test Start]\r\n", ParsePythonFileNameWithoutExtension(item.SCRIPT)));
+                    OnResultReceived(string.Format("[{0} Test Start]\r\n", item.TEST_NAME));
 
                     await _currentBaseTest.Run(paramObj);
                 }
@@ -116,7 +103,9 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.TestBlocks
 
         public class TestFlowItem
         {
+            public string TEST_NAME { get; set; }
             public string SCRIPT { get; set; }
+            public string SCRIPT_ARGUMENT { get; set; }
             public int TIMEOUT { get; set; }
             public string PASS_CONDITION { get; set; }
             public int COMPORT { get; set; }

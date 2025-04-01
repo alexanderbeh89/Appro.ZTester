@@ -1,0 +1,6 @@
+{
+    "TEST_NAME" : "UpVolume",
+    "SCRIPT" : "C:\\Users\\alexa\\Documents\\GitHub\\Appro.ZTester\\External\\Scripts\\Python\\UpVolume.py",
+    "TIMEOUT" : 20000,
+    "PASS_CONDITION" : "TESTPASS"
+}

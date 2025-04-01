@@ -40,9 +40,10 @@
             // 
             // StartButton
             // 
-            this.StartButton.Location = new System.Drawing.Point(645, 299);
+            this.StartButton.Location = new System.Drawing.Point(573, 239);
+            this.StartButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.StartButton.Name = "StartButton";
-            this.StartButton.Size = new System.Drawing.Size(131, 35);
+            this.StartButton.Size = new System.Drawing.Size(116, 28);
             this.StartButton.TabIndex = 0;
             this.StartButton.Text = "Start Test";
             this.StartButton.UseVisualStyleBackColor = true;
@@ -50,28 +51,31 @@
             // 
             // StopButton
             // 
-            this.StopButton.Location = new System.Drawing.Point(645, 340);
+            this.StopButton.Location = new System.Drawing.Point(573, 272);
+            this.StopButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.StopButton.Name = "StopButton";
-            this.StopButton.Size = new System.Drawing.Size(131, 35);
+            this.StopButton.Size = new System.Drawing.Size(116, 28);
             this.StopButton.TabIndex = 1;
-            this.StopButton.Text = "Stop Test";
+            this.StopButton.Text = "Abort Test";
             this.StopButton.UseVisualStyleBackColor = true;
             this.StopButton.Click += new System.EventHandler(this.StopButton_Click);
             // 
             // MsgTextBox
             // 
-            this.MsgTextBox.Location = new System.Drawing.Point(29, 34);
+            this.MsgTextBox.Location = new System.Drawing.Point(26, 27);
+            this.MsgTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.MsgTextBox.Multiline = true;
             this.MsgTextBox.Name = "MsgTextBox";
             this.MsgTextBox.ReadOnly = true;
-            this.MsgTextBox.Size = new System.Drawing.Size(499, 117);
+            this.MsgTextBox.Size = new System.Drawing.Size(444, 94);
             this.MsgTextBox.TabIndex = 2;
             // 
             // ResetButton
             // 
-            this.ResetButton.Location = new System.Drawing.Point(645, 381);
+            this.ResetButton.Location = new System.Drawing.Point(573, 305);
+            this.ResetButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.ResetButton.Name = "ResetButton";
-            this.ResetButton.Size = new System.Drawing.Size(131, 35);
+            this.ResetButton.Size = new System.Drawing.Size(116, 28);
             this.ResetButton.TabIndex = 3;
             this.ResetButton.Text = "Reset";
             this.ResetButton.UseVisualStyleBackColor = true;
@@ -79,9 +83,10 @@
             // 
             // PTTButton
             // 
-            this.PTTButton.Location = new System.Drawing.Point(645, 34);
+            this.PTTButton.Location = new System.Drawing.Point(573, 27);
+            this.PTTButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PTTButton.Name = "PTTButton";
-            this.PTTButton.Size = new System.Drawing.Size(131, 35);
+            this.PTTButton.Size = new System.Drawing.Size(116, 28);
             this.PTTButton.TabIndex = 4;
             this.PTTButton.Text = "PTT";
             this.PTTButton.UseVisualStyleBackColor = true;
@@ -89,37 +94,40 @@
             // 
             // VolumeUpButton
             // 
-            this.VolumeUpButton.Location = new System.Drawing.Point(645, 75);
+            this.VolumeUpButton.Location = new System.Drawing.Point(573, 60);
+            this.VolumeUpButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.VolumeUpButton.Name = "VolumeUpButton";
-            this.VolumeUpButton.Size = new System.Drawing.Size(131, 35);
+            this.VolumeUpButton.Size = new System.Drawing.Size(116, 28);
             this.VolumeUpButton.TabIndex = 5;
-            this.VolumeUpButton.Text = "Volume Up";
+            this.VolumeUpButton.Text = "Up Volume";
             this.VolumeUpButton.UseVisualStyleBackColor = true;
             this.VolumeUpButton.Click += new System.EventHandler(this.VolumeUpButton_Click);
             // 
             // VolumeDownButton
             // 
-            this.VolumeDownButton.Location = new System.Drawing.Point(645, 116);
+            this.VolumeDownButton.Location = new System.Drawing.Point(573, 93);
+            this.VolumeDownButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.VolumeDownButton.Name = "VolumeDownButton";
-            this.VolumeDownButton.Size = new System.Drawing.Size(131, 35);
+            this.VolumeDownButton.Size = new System.Drawing.Size(116, 28);
             this.VolumeDownButton.TabIndex = 6;
-            this.VolumeDownButton.Text = "Volume Down";
+            this.VolumeDownButton.Text = "Down Volume";
             this.VolumeDownButton.UseVisualStyleBackColor = true;
             // 
             // TestOperationTextBox
             // 
-            this.TestOperationTextBox.Location = new System.Drawing.Point(29, 299);
+            this.TestOperationTextBox.Location = new System.Drawing.Point(26, 239);
+            this.TestOperationTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.TestOperationTextBox.Multiline = true;
             this.TestOperationTextBox.Name = "TestOperationTextBox";
             this.TestOperationTextBox.ReadOnly = true;
-            this.TestOperationTextBox.Size = new System.Drawing.Size(499, 117);
+            this.TestOperationTextBox.Size = new System.Drawing.Size(444, 94);
             this.TestOperationTextBox.TabIndex = 7;
             // 
             // QDOS14514ButtonMicFunctionalTesterForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(711, 360);
             this.Controls.Add(this.TestOperationTextBox);
             this.Controls.Add(this.VolumeDownButton);
             this.Controls.Add(this.VolumeUpButton);
@@ -128,6 +136,7 @@
             this.Controls.Add(this.MsgTextBox);
             this.Controls.Add(this.StopButton);
             this.Controls.Add(this.StartButton);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "QDOS14514ButtonMicFunctionalTesterForm";
             this.Text = "QDOS";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.QDOS14514ButtonMicFunctionalTesterForm_FormClosing_1);

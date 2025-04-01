@@ -67,12 +67,12 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.TestBlocks
                     return;
                 }
 
-                string script = (string)jObject["SCRIPT"];
-                int timeout = (int)jObject["TIMEOUT"];
-                string passCondition = (string)jObject["PASS_CONDITION"];
-                int comPort = (int)jObject["COMPORT"];
+                string script = jObject["SCRIPT"]?.ToString() ?? "";
+                string scriptArgument = jObject["SCRIPT_ARGUMENT"]?.ToString() ?? "";
+                int timeout = (int?)jObject["TIMEOUT"] ?? 1000;
+                string passCondition = jObject["PASS_CONDITION"]?.ToString() ?? "";
 
-                _pythonTask = _engine.ExecutePythonScriptAsync(script, timeout);
+                _pythonTask = _engine.ExecutePythonScriptAsync(script, timeout, scriptArgument);
                 await _pythonTask;
 
                 OnResultReceived(_ret.ToString());

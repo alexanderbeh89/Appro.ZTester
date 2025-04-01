@@ -1,45 +1,49 @@
 [
     {
-        "SCRIPT" : "C:\\Users\\30716\\Documents\\GitHub\\Appro.ZTester\\External\\Scripts\\Python\\PowerUp.py",
+        "TEST_NAME" : "PowerUp",
+        "SCRIPT" : "C:\\Users\\alexa\\Documents\\GitHub\\Appro.ZTester\\External\\Scripts\\Python\\SendSerialToArduinoUno.py",
+        "SCRIPT_ARGUMENT" : "--comport=COM9 --baudrate=9600 --command=PowerUp",
+        "TIMEOUT" : 20000,
+        "PASS_CONDITION" : "TESTPASS"
+    }
+    ,
+    {
+        "TEST_NAME" : "UpVolume",
+        "SCRIPT" : "C:\\Users\\alexa\\Documents\\GitHub\\Appro.ZTester\\External\\Scripts\\Python\\SendSerialToArduinoUno.py",
+        "SCRIPT_ARGUMENT" : "--comport=COM9 --baudrate=9600 --command=UpVolume",
+        "TIMEOUT" : 20000,
+        "PASS_CONDITION" : "TESTPASS"
+    }
+    ,
+    {
+        "TEST_NAME" : "DownVolume",
+        "SCRIPT" : "C:\\Users\\alexa\\Documents\\GitHub\\Appro.ZTester\\External\\Scripts\\Python\\SendSerialToArduinoUno.py",
+        "SCRIPT_ARGUMENT" : "--comport=COM9 --baudrate=9600 --command=DownVolume",
+        "TIMEOUT" : 20000,
+        "PASS_CONDITION" : "TESTPASS"
+    }
+    ,
+    {
+        "TEST_NAME" : "PTT",
+        "SCRIPT" : "C:\\Users\\alexa\\Documents\\GitHub\\Appro.ZTester\\External\\Scripts\\Python\\SendSerialToArduinoUno.py",
+        "SCRIPT_ARGUMENT" : "--comport=COM9 --baudrate=9600 --command=PTT",
+        "TIMEOUT" : 20000,
+        "PASS_CONDITION" : "TESTPASS"
+    }
+    ,
+    {
+        "TEST_NAME" : "MeasureMic",
+        "SCRIPT" : "C:\\Users\\alexa\\Documents\\GitHub\\Appro.ZTester\\External\\Scripts\\Python\\MeasureMic.py",
         "TIMEOUT" : 20000,
         "PASS_CONDITION" : "TESTPASS",
         "COMPORT" : 1
     }
     ,
     {
-        "SCRIPT" : "C:\\Users\\30716\\Documents\\GitHub\\Appro.ZTester\\External\\Scripts\\Python\\UpVolume.py",
+        "TEST_NAME" : "PowerDown",
+        "SCRIPT" : "C:\\Users\\alexa\\Documents\\GitHub\\Appro.ZTester\\External\\Scripts\\Python\\SendSerialToArduinoUno.py",
+        "SCRIPT_ARGUMENT" : "--comport=COM9 --baudrate=9600 --command=PowerDown",
         "TIMEOUT" : 20000,
-        "PASS_CONDITION" : "TESTPASS",
-        "COMPORT" : 1,
-        "FAIL_CONDITION" : "TESTFAIL"
-    }
-    ,
-    {
-        "SCRIPT" : "C:\\Users\\30716\\Documents\\GitHub\\Appro.ZTester\\External\\Scripts\\Python\\DownVolume.py",
-        "TIMEOUT" : 20000,
-        "PASS_CONDITION" : "TESTPASS",
-        "COMPORT" : 1
-    }
-    ,
-    {
-        "SCRIPT" : "C:\\Users\\30716\\Documents\\GitHub\\Appro.ZTester\\External\\Scripts\\Python\\PTT.py",
-        "TIMEOUT" : 20000,
-        "PASS_CONDITION" : "TESTPASS",
-        "COMPORT" : 1,
-        "FAIL_CONDITION" : "TESTFAIL"
-    }
-    ,    {
-        "SCRIPT" : "C:\\Users\\30716\\Documents\\GitHub\\Appro.ZTester\\External\\Scripts\\Python\\MeasureMic.py",
-        "TIMEOUT" : 20000,
-        "PASS_CONDITION" : "TESTPASS",
-        "COMPORT" : 1
-    }
-    ,
-    {
-        "SCRIPT" : "C:\\Users\\30716\\Documents\\GitHub\\Appro.ZTester\\External\\Scripts\\Python\\PowerDown.py",
-        "TIMEOUT" : 20000,
-        "PASS_CONDITION" : "TESTPASS",
-        "COMPORT" : 1,
-        "FAIL_CONDITION" : "TESTFAIL"
+        "PASS_CONDITION" : "TESTPASS"
     }
 ]

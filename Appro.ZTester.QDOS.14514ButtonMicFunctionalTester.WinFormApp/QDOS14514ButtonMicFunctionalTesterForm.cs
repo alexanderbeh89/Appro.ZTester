@@ -18,43 +18,22 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
 {
     public partial class QDOS14514ButtonMicFunctionalTesterForm : Form
     {
-        private IRunTest _upVolumeService;
         private IRunTest _startTestService;
+        private IRunTest _upVolumeService;
 
-        private void InitUpVolumeService()
-        {
-            _upVolumeService = ServiceFactory.GetIRunTestInstance("UpVolume");
-            _upVolumeService.ResultReceived += (sender, e) =>
-            {
-                Invoke(new Action(() => MsgTextBox.AppendText($"***UpVolume Output***\r\n {e.Output}\r\n")));
-                VolumeUpButton.Enabled = true;
-
-            };
-            _upVolumeService.PassReceived += (sender, e) =>
-            {
-                Invoke(new Action(() => MsgTextBox.AppendText($"UpVolume Successful\r\n")));
-                Thread.Sleep(1000);
-                MsgTextBox.Clear();
-            };
-            _upVolumeService.FailReceived += (sender, e) =>
-            {
-                Invoke(new Action(() => MsgTextBox.AppendText($"UpVolume Fail\r\n")));  // Dont call MsgTextBox.Clear(); to let user troubleshoot the issue 1st before clicking the Reset Button
-            };
-        }
         private void InitStartTestService()
         {
             _startTestService = ServiceFactory.GetIRunTestInstance("StartTest");
             _startTestService.ResultReceived += (sender, e) =>
             {
                 Invoke(new Action(() => TestOperationTextBox.AppendText($"{e.Output}\r\n")));
-                StartButton.Enabled = true;
             };
 
             _startTestService.PassReceived += (sender, e) =>
             {
                 Invoke(new Action(() => TestOperationTextBox.AppendText($"[Test Pass from GUI]\r\n")));
                 Thread.Sleep(1000);
-                TestOperationTextBox.Clear();                
+                TestOperationTextBox.Clear();
             };
             _startTestService.FailReceived += (sender, e) =>
             {
@@ -62,10 +41,29 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
             };
         }
 
+        private void InitUpVolumeService()
+        {
+            _upVolumeService = ServiceFactory.GetIRunTestInstance("UpVolume");
+            _upVolumeService.ResultReceived += (sender, e) =>
+            {
+                Invoke(new Action(() => MsgTextBox.AppendText($"{e.Output}\r\n")));
+            };
+            _upVolumeService.PassReceived += (sender, e) =>
+            {
+                Invoke(new Action(() => MsgTextBox.AppendText($"[UpVolume Pass from GUI]\r\n")));
+                Thread.Sleep(1000);
+                MsgTextBox.Clear();
+            };
+            _upVolumeService.FailReceived += (sender, e) =>
+            {
+                Invoke(new Action(() => MsgTextBox.AppendText($"[UpVolume Fail from GUI]\r\n")));  // Dont call MsgTextBox.Clear(); to let user troubleshoot the issue 1st before clicking the Reset Button
+            };
+        }
+
         private void Init()
         {
-            InitUpVolumeService();
             InitStartTestService();
+            InitUpVolumeService();
 
             PTTButton.Enabled = true;
             VolumeUpButton.Enabled = true;
@@ -111,7 +109,7 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
             try
             {
                 string executableLocation = Assembly.GetExecutingAssembly().Location;
-                string executablePath = Path.GetDirectoryName(executableLocation) + "\\" + "testflow.json";
+                string executablePath = Path.GetDirectoryName(executableLocation) + "\\" + "TestFlow.json";
                 string jsonString = File.ReadAllText(executablePath);
                 JArray jArray = JArray.Parse(jsonString);
 
@@ -141,30 +139,29 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
         private async void VolumeUpButton_Click(object sender, EventArgs e)
         {
             VolumeUpButton.Enabled = false;
+            MsgTextBox.Clear();
+
             try
             {
                 string executableLocation = Assembly.GetExecutingAssembly().Location;
-                string executableDirectory = Path.GetDirectoryName(executableLocation) + "\\Scripts\\Python\\";
+                string executablePath = Path.GetDirectoryName(executableLocation) + "\\" + "UpVolume.json";
+                string jsonString = File.ReadAllText(executablePath);
+                JObject jObject = JObject.Parse(jsonString);
 
-                JObject paramObj = new JObject
-                {
-                    ["SCRIPT"] = executableDirectory + "UpVolume.py",
-                    ["TIMEOUT"] = 10000,
-                    ["PASS_CONDITION"] = "TESTPASS",
-                    ["COMPORT"] = 1
-                };
-
-                await _upVolumeService.Run(paramObj);
+                await _upVolumeService.Run(jObject);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-            
+
             VolumeUpButton.Enabled = true;
         }
+
         private void PTTButton_Click(object sender, EventArgs e)
         {
+            PTTButton.Enabled = false;
+
             try
             {
                 _upVolumeService.Abort();
@@ -172,8 +169,11 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            }          
+            }
+
+            PTTButton.Enabled = true;
         }
+
         public QDOS14514ButtonMicFunctionalTesterForm()
         {
             InitializeComponent();
