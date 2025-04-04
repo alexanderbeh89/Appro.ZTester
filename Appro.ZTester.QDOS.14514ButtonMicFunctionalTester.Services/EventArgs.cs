@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.Services
+namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.Common
 {
     public class ServiceResultReceivedEventArgs : EventArgs
     {

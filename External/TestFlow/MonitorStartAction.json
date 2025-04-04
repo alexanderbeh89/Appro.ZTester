@@ -1,0 +1,7 @@
+{
+    "TEST_NAME" : "MonitorStartAction",
+    "SCRIPT" : "C:\\Users\\30716\\Documents\\GitHub\\Appro.ZTester\\External\\Scripts\\Python\\MonitorStartAction.py",
+    "SCRIPT_ARGUMENT" : "--comport=COM5 --baudrate=9600 --command=MonitorStartAction",
+    "TIMEOUT" : 5000,
+    "PASS_CONDITION" : "TESTPASS"
+}

@@ -168,6 +168,76 @@ namespace Appro.ZTester.PythonExecution
                 _pythonProcess?.Dispose();
             }
         }
+
+        public async Task ExecutePythonScriptAsync(CancellationTokenSource cancellationTokenSource, string filePath, int timeoutMilliseconds, string arguments = "")
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                FileName = "python",
+                Arguments = $"\"{filePath}\" {arguments}",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                StandardOutputEncoding = Encoding.UTF8,
+                StandardErrorEncoding = Encoding.UTF8,
+            };
+
+            _pythonProcess = new Process();
+            _pythonProcess.StartInfo = startInfo;
+
+            _pythonProcess.OutputDataReceived += (sender, e) =>
+            {
+                if (e.Data != null)
+                {
+                    OnPythonOutputReceived(e.Data);
+                }
+            };
+
+            _pythonProcess.ErrorDataReceived += (sender, e) =>
+            {
+                if (e.Data != null)
+                {
+                    OnPythonErrorReceived(e.Data);
+                }
+            };
+
+            try
+            {
+                _pythonProcess.Start();
+                _pythonProcess.BeginOutputReadLine();
+                _pythonProcess.BeginErrorReadLine();
+
+                bool completed = await Task.Run(() => _pythonProcess.WaitForExit(timeoutMilliseconds), cancellationTokenSource.Token);
+
+                if (!completed)
+                {
+                    if (!cancellationTokenSource.IsCancellationRequested)
+                    {
+                        _pythonProcess.Kill(); // Timeout occurred
+                        OnPythonProcessCompleted(true); // Timed out.
+                    }
+                    else
+                    {
+                        OnPythonProcessCompleted(false); // Cancelled by user.
+                    }
+                }
+                else
+                {
+                    OnPythonProcessCompleted(false); // Normal completion.
+                }
+
+            }
+            catch (OperationCanceledException)
+            {
+                OnPythonProcessCompleted(false); // Process was cancelled.
+            }
+            finally
+            {
+                _pythonProcess?.Dispose();
+            }
+        }
+
         public void StopPythonProcess()
         {
             _cancellationTokenSource?.Cancel();
