@@ -124,7 +124,8 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.TestBlocks
                 _cancellationTokenSource.Cancel();
                 try
                 {
-                    await _myTask;
+                    if (_myTask != null)
+                        await _myTask;
                 }
                 catch (AggregateException ex)
                 {

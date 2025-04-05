@@ -128,7 +128,15 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
 
         private void QDOS14514ButtonMicFunctionalTesterForm_Load(object sender, EventArgs e)
         {
-            Init();
+            try
+            {
+                Init();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                Application.Exit();
+            }           
         }
 
         private async void QDOS14514ButtonMicFunctionalTesterForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -140,6 +148,7 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                Application.Exit();
             }
         }
 
