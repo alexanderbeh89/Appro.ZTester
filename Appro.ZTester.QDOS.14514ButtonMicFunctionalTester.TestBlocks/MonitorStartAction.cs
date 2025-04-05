@@ -56,6 +56,10 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.TestBlocks
                         {
                             OnResultReceived(_ret.ToString());
                         }
+                        else if (_ret.ToString().Contains("MonitorStartAction_ACK_2"))
+                        {
+                            OnResultReceived(_ret.ToString());
+                        }
                     }
                     else
                     {

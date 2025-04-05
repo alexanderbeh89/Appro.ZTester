@@ -18,6 +18,11 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.Common
                 return new StartTest();
             }
 
+            if (testName == "CompleteTest")
+            {
+                return new CompleteTest();
+            }
+
             return null;
         }
 

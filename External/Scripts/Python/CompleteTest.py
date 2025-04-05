@@ -23,10 +23,8 @@ def main():
         time.sleep(0.5)
         response = send_command(ser, args.command)
         print(f"Arduino Response: {response}")
-        if (args.command + "_ACK" in response):
+        if (response == args.command + "_ACK_PASS"): 
             print("TESTPASS")
-        #if (response == args.command + "_ACK"):  
-        #    print("TESTPASS")
         else:
             print("TESTFAIL")
 

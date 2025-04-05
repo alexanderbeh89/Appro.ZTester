@@ -19,6 +19,7 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
     {
         private IMonitor _monitorStartActionService;
         private IRunTest _startTestService;
+        private IRunTest _completeTestService;
 
         private void InitMonitorStartActionService()
         {
@@ -52,21 +53,40 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
                 Invoke(new Action(() => TestOperationTextBox.AppendText($"{e.Output}\r\n")));
             };
 
-            _startTestService.PassReceived += (sender, e) =>
+            _startTestService.PassReceived += async (sender, e) =>
+            {
+                InitCompleteTestService();
+                await CompleteTest();
+            };
+
+            _startTestService.FailReceived += async (sender, e) =>
+            {
+                InitCompleteTestService();
+                await CompleteTest();
+            };
+        }
+
+        private void InitCompleteTestService()
+        {
+            _completeTestService = ServiceFactory.GetIRunTestInstance("CompleteTest");
+
+            _completeTestService.ResultReceived += (sender, e) =>
+            {
+                Invoke(new Action(() => TestOperationTextBox.AppendText($"{e.Output}\r\n")));
+            };
+
+            _completeTestService.PassReceived += (sender, e) =>
             {
                 Invoke(new Action(() => TestOperationTextBox.AppendText($"[Test Pass from GUI]\r\n")));
                 Thread.Sleep(1000);
-                Invoke(new Action(() => TestOperationTextBox.Clear()));
 
                 ResetUIAttr();
                 ResetServices();
             };
 
-            _startTestService.FailReceived += (sender, e) =>
+            _completeTestService.FailReceived += (sender, e) =>
             {
                 Invoke(new Action(() => TestOperationTextBox.AppendText($"[Test Fail from GUI]\r\n")));  // Dont call TestOperationTextBox.Clear(); to let user troubleshoot the issue 1st before clicking the Reset Button
-
-                _monitorStartActionService.PauseMonitoring();
             };
         }
 
@@ -107,6 +127,7 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
         {
             InitMonitorStartActionService();
             InitStartTestService();
+            InitCompleteTestService();
             MonitorStartAction();
             ResetUIAttr();
         }
@@ -122,6 +143,16 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
             JArray jArray = JArray.Parse(jsonString);
 
             await _startTestService.Run(jArray);
+        }
+
+        private async Task CompleteTest()
+        {
+            string executableLocation = Assembly.GetExecutingAssembly().Location;
+            string executablePath = Path.GetDirectoryName(executableLocation) + "\\" + "CompleteTest.json";
+            string jsonString = File.ReadAllText(executablePath);
+            JObject jobject = JObject.Parse(jsonString);
+
+            await _completeTestService.Run(jobject);
 
             Invoke(new Action(() => StartButton.Enabled = true));
         }
@@ -165,21 +196,6 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
 
             StartButton.Enabled = true;
         }
-        /*
-        private async void StartButton_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                await StartTest();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-
-            StartButton.Enabled = true;
-        }
-        */
 
         private void StopButton_Click(object sender, EventArgs e)
         {

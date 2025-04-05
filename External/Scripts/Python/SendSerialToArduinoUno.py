@@ -13,7 +13,7 @@ def main():
     parser = argparse.ArgumentParser(description="Send commands to Arduino via serial.")
     parser.add_argument("--comport", "-p", default="COM9", help="Serial COM port (e.g., COM9)")
     parser.add_argument("--baudrate", "-b", type=int, default=9600, help="Serial baud rate (e.g., 9600)")
-    parser.add_argument("--command", "-c", default="UpVolume", help="Serial Command (e.g., UpVolume, DownVolume)")
+    parser.add_argument("--command", "-c", default="MonitorStartAction", help="Serial Command (e.g., MonitorStartAction)")
 
     args = parser.parse_args()
 
@@ -37,6 +37,8 @@ def main():
         if (response == args.command + "_ACK"):  
             print("TESTPASS")
         else:
+            response = send_command(ser, "ForceFailTest")
+            print(f"Arduino Response: {response}")            
             print("TESTFAIL")
 
     except serial.SerialException as e:

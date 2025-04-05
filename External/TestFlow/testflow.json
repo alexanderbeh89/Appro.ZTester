@@ -38,4 +38,12 @@
         "TIMEOUT" : 20000,
         "PASS_CONDITION" : "TESTPASS"
     }
+    ,
+    {
+        "TEST_NAME" : "ForcePass",
+        "SCRIPT" : "C:\\Users\\30716\\Documents\\GitHub\\Appro.ZTester\\External\\Scripts\\Python\\SendSerialToArduinoUno.py",
+        "SCRIPT_ARGUMENT" : "--comport=COM5 --baudrate=9600 --command=ForcePassTest",
+        "TIMEOUT" : 20000,
+        "PASS_CONDITION" : "TESTPASS"
+    }            
 ]

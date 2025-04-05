@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseTest.cs" />
+    <Compile Include="CompleteTest.cs" />
     <Compile Include="MonitorStartAction.cs" />
     <Compile Include="StartTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
