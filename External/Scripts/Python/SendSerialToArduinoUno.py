@@ -18,11 +18,22 @@ def main():
     args = parser.parse_args()
 
     try:
+        #ser = serial.Serial(
+        #    args.comport,  # Replace with your serial port (e.g., 'COM3' on Windows, '/dev/ttyACM0' on Linux)
+        #    baudrate=args.baudrate,
+        #    bytesize=serial.EIGHTBITS,
+        #    parity=serial.PARITY_NONE,
+        #    stopbits=serial.STOPBITS_ONE,
+        #    timeout=1,
+        #    rtscts=False,  # Disable RTS/CTS flow control
+        #    dsrdtr=False   # Disable DSR/DTR flow control
+        #)
         ser = serial.Serial(args.comport, args.baudrate, timeout=1)
         time.sleep(2)  # Allow time for serial connection to establish.
 
         response = send_command(ser, args.command)
         print(f"Arduino Response: {response}")
+    
         if (response == args.command + "_ACK"):  
             print("TESTPASS")
         else:

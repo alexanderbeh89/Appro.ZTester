@@ -39,6 +39,8 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
 
                 _monitorStartActionService.PauseMonitoring();
             };
+
+            _monitorStartActionService.PauseMonitoring();
         }
 
         private void InitStartTestService()
@@ -56,9 +58,8 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
                 Thread.Sleep(1000);
                 Invoke(new Action(() => TestOperationTextBox.Clear()));
 
-                _monitorStartActionService.ResumeMonitoring();
-
-                Reset();
+                ResetUIAttr();
+                ResetServices();
             };
 
             _startTestService.FailReceived += (sender, e) =>
@@ -79,14 +80,17 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
             _monitorStartActionService.StartMonitoring(jObject);
         }
 
-        private void Reset()
+        private void ResetUIAttr()
         {
             Invoke(new Action(() => StartButton.Enabled = true));
             Invoke(new Action(() => StopButton.Enabled = true));
             Invoke(new Action(() => ResetButton.Enabled = true));
             Invoke(new Action(() => MsgTextBox.Clear()));
             Invoke(new Action(() => TestOperationTextBox.Clear()));
+        }
 
+        private void ResetServices()
+        {
             AbortStartTestService();
             _monitorStartActionService.ResumeMonitoring();
         }
@@ -104,7 +108,7 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
             InitMonitorStartActionService();
             InitStartTestService();
             MonitorStartAction();
-            Reset();
+            ResetUIAttr();
         }
 
         private async Task StartTest()
@@ -139,6 +143,20 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
             }
         }
 
+        private void StartButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _monitorStartActionService.ResumeMonitoring();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            StartButton.Enabled = true;
+        }
+        /*
         private async void StartButton_Click(object sender, EventArgs e)
         {
             try
@@ -152,6 +170,7 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
 
             StartButton.Enabled = true;
         }
+        */
 
         private void StopButton_Click(object sender, EventArgs e)
         {
@@ -169,7 +188,8 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
         {
             try
             {
-                Reset();
+                ResetUIAttr();
+                ResetServices();
             }
             catch (Exception ex)
             {
