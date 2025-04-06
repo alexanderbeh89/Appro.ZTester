@@ -9,7 +9,7 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.Common.Utilities
 {
     public class Log
     {
-        public event EventHandler<ServiceResultReceivedEventArgs> ResultReceived;
+        public event EventHandler<ResultReceivedEventArgs> ResultReceived;
 
         private StreamWriter _logFileWriter;
         private string _logFileName;
@@ -99,7 +99,7 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.Common.Utilities
 
         private void OnResultReceived(string output)
         {
-            ResultReceived?.Invoke(this, new ServiceResultReceivedEventArgs(output));
+            ResultReceived?.Invoke(this, new ResultReceivedEventArgs(output));
         }
     }
 }
