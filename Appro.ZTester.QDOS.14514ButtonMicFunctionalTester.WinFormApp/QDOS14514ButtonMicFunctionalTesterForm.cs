@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.Windows.Forms;
 using Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.Common;
+using Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.Common.Utilities;
 using System.Threading;
 
 namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
@@ -20,6 +21,7 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
         private IMonitor _monitorStartActionService;
         private IRunTest _startTestService;
         private IRunTest _completeTestService;
+        private Log _log;
 
         private void InitMonitorStartActionService()
         {
@@ -51,6 +53,7 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
             _startTestService.ResultReceived += (sender, e) =>
             {
                 Invoke(new Action(() => TestOperationTextBox.AppendText($"{e.Output}\r\n")));
+                _log.WriteLine($"{e.Output}\r\n");
             };
 
             _startTestService.PassReceived += async (sender, e) =>
@@ -73,11 +76,15 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
             _completeTestService.ResultReceived += (sender, e) =>
             {
                 Invoke(new Action(() => TestOperationTextBox.AppendText($"{e.Output}\r\n")));
+                _log.WriteLine($"{e.Output}\r\n");
             };
 
             _completeTestService.PassReceived += (sender, e) =>
             {
                 Invoke(new Action(() => TestOperationTextBox.AppendText($"[Test Pass from GUI]\r\n")));
+                _log.WriteLine($"[Test Pass from GUI]\r\n");
+                _log.CloseLog("PASS");
+
                 Thread.Sleep(1000);
 
                 ResetUIAttr();
@@ -87,7 +94,22 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
             _completeTestService.FailReceived += (sender, e) =>
             {
                 Invoke(new Action(() => TestOperationTextBox.AppendText($"[Test Fail from GUI]\r\n")));  // Dont call TestOperationTextBox.Clear(); to let user troubleshoot the issue 1st before clicking the Reset Button
+                _log.WriteLine($"[Test Fail from GUI]\r\n");
+                _log.CloseLog("FAIL");
             };
+        }
+
+        private void InitLog()
+        {
+            _log = new Log();
+            _log.ResultReceived += (sender, e) =>
+            {
+                Invoke(new Action(() => TestOperationTextBox.AppendText($"{e.Output}\r\n")));
+            };
+
+            _log.Init();
+
+            return;
         }
 
         private void MonitorStartAction()
@@ -136,6 +158,8 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
         {
             Invoke(new Action(() => StartButton.Enabled = false));
             Invoke(new Action(() => TestOperationTextBox.Clear()));
+
+            InitLog();
 
             string executableLocation = Assembly.GetExecutingAssembly().Location;
             string executablePath = Path.GetDirectoryName(executableLocation) + "\\" + "TestFlow.json";
