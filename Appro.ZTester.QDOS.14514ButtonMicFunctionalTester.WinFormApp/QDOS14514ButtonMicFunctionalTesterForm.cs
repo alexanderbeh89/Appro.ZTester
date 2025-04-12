@@ -30,7 +30,9 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
             
             _monitorStartActionService.ResultReceived += async (sender, e) =>
             {
-                Invoke(new Action(() => MsgTextBox.AppendText($"{e.Output}\r\n")));
+                Invoke(new Action(() => labelInterfaceBoardState.Text = "Start"));
+                Thread.Sleep(1000);
+                Invoke(new Action(() => labelInterfaceBoardState.Text = "OK"));
                 
                 _monitorStartActionService.PauseMonitoring();
 
@@ -39,7 +41,8 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
             
             _monitorStartActionService.FailReceived += (sender, e) =>
             {
-                Invoke(new Action(() => MsgTextBox.AppendText($"{e.Output}\r\n")));
+                MessageBox.Show(e.Output);
+                Invoke(new Action(() => labelInterfaceBoardState.Text = "FAIL"));
 
                 _monitorStartActionService.PauseMonitoring();
             };
@@ -83,6 +86,8 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
             _completeTestService.PassReceived += (sender, e) =>
             {
                 Invoke(new Action(() => TestOperationTextBox.AppendText($"[Test Pass from GUI]\r\n")));
+                Invoke(new Action(() => labelTestStatus.Text = "PASS"));
+                Invoke(new Action(() => labelTestStatus.BackColor = Color.LimeGreen));
                 _log.WriteLine($"[Test Pass from GUI]\r\n");
                 _log.CloseLog("PASS");
 
@@ -95,6 +100,8 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
             _completeTestService.FailReceived += (sender, e) =>
             {
                 Invoke(new Action(() => TestOperationTextBox.AppendText($"[Test Fail from GUI]\r\n")));  // Dont call TestOperationTextBox.Clear(); to let user troubleshoot the issue 1st before clicking the Reset Button
+                Invoke(new Action(() => labelTestStatus.Text = "FAIL"));
+                Invoke(new Action(() => labelTestStatus.BackColor = Color.Red));
                 _log.WriteLine($"[Test Fail from GUI]\r\n");
                 _log.CloseLog("FAIL");
             };
@@ -128,14 +135,26 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
             Invoke(new Action(() => StartButton.Enabled = true));
             Invoke(new Action(() => StopButton.Enabled = true));
             Invoke(new Action(() => ResetButton.Enabled = true));
-            Invoke(new Action(() => MsgTextBox.Clear()));
+            Invoke(new Action(() => labelInterfaceBoardState.Text = "OK"));
             Invoke(new Action(() => TestOperationTextBox.Clear()));
+
+            return;
         }
 
         private void ResetServices()
         {
             AbortStartTestService();
             _monitorStartActionService.ResumeMonitoring();
+            
+            return;
+        }
+
+        private void ResetTestStatus()
+        {
+            Invoke(new Action(() => labelTestStatus.Text = "IDLE"));
+            Invoke(new Action(() => labelTestStatus.BackColor = Color.LightCyan));
+
+            return;
         }
 
         private void AbortStartTestService()
@@ -153,12 +172,15 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
             InitCompleteTestService();
             MonitorStartAction();
             ResetUIAttr();
+            ResetTestStatus();
         }
 
         private async Task StartTest()
         {
             Invoke(new Action(() => StartButton.Enabled = false));
             Invoke(new Action(() => TestOperationTextBox.Clear()));
+            Invoke(new Action(() => labelTestStatus.Text = "TESTING"));
+            Invoke(new Action(() => labelTestStatus.BackColor = Color.Yellow));
 
             InitLog();
 
@@ -238,6 +260,7 @@ namespace Appro.ZTester.QDOS._14514ButtonMicFunctionalTester.WinFormApp
         {
             try
             {
+                ResetTestStatus();
                 ResetUIAttr();
                 ResetServices();
             }
